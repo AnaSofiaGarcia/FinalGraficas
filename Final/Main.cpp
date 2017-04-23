@@ -3,9 +3,22 @@
 #include <glm/glm.hpp>
 #include <IL/il.h>
 #include "Camera.h"
+#include "Ray.h"
+#include "Sphere.h"
 
 Camera _camera;
+Ray _ray;
+Sphere _sphere;
 
+void Initialize() {
+	for (int j = 0; j <= 1080; j++) {
+		for (int i = 0; i <= 720; i++) {
+			_ray.CreatRay(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f));
+
+			if(//sphere intersect)
+		}
+	}
+}
 
 void GameLoop()
 {
@@ -74,7 +87,7 @@ int main(int argc, char* argv[])
 									   //con las coordenadas de texturas
 
 
-	//Initialize();
+	Initialize();
 
 	// Iniciar la aplicación. El main se pausará en esta
 	// línea hasta que se cierre la ventana de OpenGL.
