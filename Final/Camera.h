@@ -1,13 +1,22 @@
 #pragma once
-#include <glm/glm.hpp>
+#include "Ray.h"
+
 class Camera
 {
 public:
 	Camera();
+	Camera(Ray position, Ray direction, Ray right, Ray down);
 	~Camera();
-	void SetOrthographic(float size, float aspectRatio);
+
+	Ray getCameraPosition();
+	Ray getCameraDirection();
+	Ray getCameraRight();
+	Ray getCameraDown();
 
 private:
-	glm::mat4 _projectionMatrix;
+	Ray camPosition;
+	Ray camDirection;
+	Ray camRight;
+	Ray camDown;
 };
 

@@ -1,18 +1,42 @@
 #include "Camera.h"
-#include <glm\gtc\matrix_transform.hpp>
-
 
 
 Camera::Camera()
 {
+	camPosition = Ray(0, 0, 0);
+	camDirection = Ray(0, 0, 1);
+	camRight = Ray(0, 0, 0);
+	camDown = Ray(0, 0, 0);
 }
 
+Camera::Camera(Ray position, Ray direction, Ray right, Ray down)
+{
+	camPosition = position;
+	camDirection = direction;
+	camRight = right;
+	camDown = down;
+}
 
 Camera::~Camera()
 {
 }
 
-void Camera::SetOrthographic(float size, float aspectRatio) {
-	float xSize = aspectRatio * size;
-	_projectionMatrix = glm::ortho(-xSize, xSize, -size, size, -size, size);
+Ray Camera::getCameraPosition()
+{
+	return camPosition;
+}
+
+Ray Camera::getCameraDirection()
+{
+	return camDirection;
+}
+
+Ray Camera::getCameraRight()
+{
+	return camRight;
+}
+
+Ray Camera::getCameraDown()
+{
+	return camDown;
 }
