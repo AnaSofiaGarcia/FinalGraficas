@@ -7,15 +7,10 @@ Plane::Plane()
 	_color = Color(0.5, 0.5, 0.5, 0);
 }
 
-Plane::Plane(Ray normalValue, double distanceValue, Color colorValue)
-{
+Plane::Plane(Ray normalValue, double distanceValue, Color colorValue) {
 	_normal = normalValue;
 	_distance = distanceValue;
 	_color = colorValue;
-}
-
-Plane::~Plane()
-{
 }
 
 Ray Plane::getPlaneNormal()
@@ -33,20 +28,21 @@ Color Plane::getColor()
 	return _color;
 }
 
-Ray Plane::getNormal(Ray point)
+Ray Plane::getNormalAt(Ray point)
 {
 	return _normal;
 }
 
-double Plane::findIntersection(Line line)
+double Plane::findIntersection(Line linea)
 {
-	Ray lineDirection = line.getLineDirection();
+	Ray lineDirection = linea.getLineDirection();
 	double a = lineDirection.dotProduct(_normal);
 	if (a == 0) {
 		return -1;
 	}
 	else {
-		double b = _normal.dotProduct(line.getLineOrigin().addRay(_normal.multRay(_distance).negative()));
+		double b = _normal.dotProduct(linea.getLineOrigin().addRay(_normal.multRay(_distance).negative()));
 		return -1 * b / a;
 	}
 }
+

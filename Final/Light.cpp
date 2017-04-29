@@ -6,14 +6,9 @@ Light::Light()
 	_color = Color(1, 1, 1, 0);
 }
 
-Light::Light(Ray p, Color c)
-{
+Light::Light(Ray p, Color c) {
 	_position = p;
 	_color = c;
-}
-
-Light::~Light()
-{
 }
 
 Ray Light::getLightPosition()

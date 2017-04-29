@@ -1,25 +1,24 @@
 #pragma once
+
 #include "Ray.h"
-#include "Color.h"
 #include "GeometricObject.h"
 #include "math.h"
+#include "Color.h"
 
-class Plane : public GeometricObject
-{
-public:
-	Plane();
-	Plane(Ray normalValue, double distanceValue, Color colorValue);
-	~Plane();
-
-	Ray getPlaneNormal();
-	double getPlaneDistance();
-	Color getColor();
-	Ray getNormal(Ray point);
-
-	double findIntersection(Line line);
-
-private:
+class Plane : public GeometricObject {
 	Ray _normal;
 	double _distance;
 	Color _color;
+
+public:
+	Plane();
+	Plane(Ray, double, Color);
+
+
+	Ray getPlaneNormal();
+	double getPlaneDistance();
+	virtual Color getColor();
+
+	virtual Ray getNormalAt(Ray point);
+	virtual double findIntersection(Line line);
 };

@@ -7,16 +7,12 @@ Color::Color()
 	_blue = 0.5;
 }
 
-Color::Color(double r, double g, double b, double a)
+Color::Color(double r, double g, double b, double s)
 {
 	_red = r;
 	_green = g;
 	_blue = b;
-	_alpha = a;
-}
-
-Color::~Color()
-{
+	_special = s;
 }
 
 double Color::getColorRed()
@@ -34,9 +30,9 @@ double Color::getColorBlue()
 	return _blue;
 }
 
-double Color::getColorAlpha()
+double Color::getColorSpecial()
 {
-	return _alpha;
+	return _special;
 }
 
 double Color::setColorRed(double redValue)
@@ -54,9 +50,9 @@ double Color::setColorBlue(double blueValue)
 	return blueValue;
 }
 
-double Color::setColorAlpha(double alphaValue)
+double Color::setColorSpecial(double specialValue)
 {
-	return alphaValue;
+	return specialValue;
 }
 
 double Color::brightness()
@@ -66,22 +62,22 @@ double Color::brightness()
 
 Color Color::colorScalar(double scalar)
 {
-	return Color(_red * scalar, _green * scalar, _blue * scalar, _alpha);
+	return Color(_red * scalar, _green * scalar, _blue * scalar, _special);
 }
 
 Color Color::colorAdd(Color color)
 {
-	return Color(_red + color.getColorRed(), _green + color.getColorGreen(), _blue + color.getColorBlue, _alpha);
+	return Color(_red + color.getColorRed(), _green + color.getColorGreen(), _blue + color.getColorBlue(), _special);
 }
 
 Color Color::colorMultiply(Color color)
 {
-	return Color(_red * color.getColorRed(), _green * color.getColorGreen(), _blue * color.getColorBlue, _alpha);
+	return Color(_red * color.getColorRed(), _green * color.getColorGreen(), _blue * color.getColorBlue(), _special);
 }
 
 Color Color::colorAverage(Color color)
 {
-	return Color((_red + color.getColorRed()) / 2, (_green + color.getColorGreen()) / 2, (_blue + color.getColorBlue) / 2, _alpha);
+	return Color((_red + color.getColorRed()) / 2, (_green + color.getColorGreen()) / 2, (_blue + color.getColorBlue()) / 2, _special);
 }
 
 Color Color::clip()
@@ -93,25 +89,23 @@ Color Color::clip()
 		_green = _green + excessLight * (_green / allLight);
 		_blue = _blue + excessLight * (_blue / allLight);
 	}
-
-	if (_red > 1){ 
-		_red = 1;
+	if (_red > 1) { 
+		_red = 1; 
 	}
-	if (_green > 1){
-		_green = 1;
+	if (_green > 1) {
+		_green = 1; 
 	}
-	if (_blue > 1){
-		_blue = 1;
+	if (_blue > 1) {
+		_blue = 1; 
 	}
-	if (_red < 0){
-		_red = 0;
+	if (_red < 0) {
+		_red = 0; 
 	}
-	if (_green < 0){
-		_green = 0;
+	if (_green < 0) { 
+		_green = 0; 
 	}
-	if (_blue < 0){
-		_blue = 0;
+	if (_blue < 0) {
+		_blue = 0; 
 	}
-
-	return Color(_red, _green, _blue, _alpha);
+	return Color(_red, _green, _blue, _special);
 }

@@ -1,17 +1,16 @@
 #pragma once
+
 #include "Ray.h"
 #include "Line.h"
 #include "Color.h"
 
-class GeometricObject
-{
+class GeometricObject {
+
 public:
 	GeometricObject();
-	~GeometricObject();
 
-	Color getColor();
-	Ray getNormal(Ray intersectionPosition);
+	virtual Color getColor();
+	virtual Ray getNormalAt(Ray intersectionPosition);
 
-	double findIntersection(Line line);
+	virtual double findIntersection(Line line);
 };
-

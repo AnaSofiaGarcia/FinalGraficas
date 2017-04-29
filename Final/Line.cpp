@@ -6,14 +6,10 @@ Line::Line()
 	_direction = Ray(1, 0, 0);
 }
 
-Line::Line(Ray origin, Ray direction)
+Line::Line(Ray o, Ray d)
 {
-	_origin = origin;
-	_direction = direction;
-}
-
-Line::~Line()
-{
+	_origin = o;
+	_direction = d;
 }
 
 Ray Line::getLineOrigin()
