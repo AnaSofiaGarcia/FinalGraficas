@@ -8,6 +8,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <glm/glm.hpp>
+#include <IL/il.h>
+
+#include "Mesh.h"
+#include "ShaderProgram.h"
+#include "Texture2D.h"
+#include "Transform.h"
+
 
 #include "Ray.h"
 #include "Line.h"
@@ -20,6 +30,12 @@
 #include "Source.h"
 
 using namespace std;
+
+Mesh _mesh;
+ShaderProgram _shaderProgram;
+Transform _transform;
+Camera _camara;
+Texture2D _raytracing;
 
 struct RGBType {
 	double r;
@@ -223,6 +239,70 @@ void doInit() {
 
 }
 
+void Initialize() {
+
+	std::vector<glm::vec3> positions;
+	positions.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
+	positions.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
+	positions.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
+	positions.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+
+	std::vector<glm::vec2> texCoords;
+	texCoords.push_back(glm::vec2(0.0f, 0.0f));
+	texCoords.push_back(glm::vec2(1.0f, 0.0f));
+	texCoords.push_back(glm::vec2(1.0f, 1.0f));
+	texCoords.push_back(glm::vec2(0.0f, 1.0f));
+
+	std::vector<unsigned int> indices;
+	indices.push_back(0); indices.push_back(2); indices.push_back(1);
+	indices.push_back(0); indices.push_back(2); indices.push_back(3);
+
+	_mesh.CreateMesh(6);
+	_mesh.SetPositionAttribute(positions, GL_STATIC_DRAW, 0);
+	_mesh.SetTexCoordAttribute(texCoords, GL_STATIC_DRAW, 1);
+	_mesh.SetIndices(indices, GL_STATIC_DRAW);
+
+	_shaderProgram.CreateProgram();
+	_shaderProgram.Activate();
+	_shaderProgram.AttachShader("DefaultTexture.vert", GL_VERTEX_SHADER);
+	_shaderProgram.AttachShader("DefaultTexture.frag", GL_FRAGMENT_SHADER);
+	_shaderProgram.SetAttribute(0, "VertexPosition");
+	_shaderProgram.SetAttribute(1, "VertexTexCoord");
+	_shaderProgram.LinkProgram();
+	_shaderProgram.Deactivate();
+
+	_camara.SetPosition(0.0f, 0.0f, 0.0f);
+
+	_raytracing.LoadTexture("RayTracing.bmp");
+	
+
+}
+
+void GameLoop() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	_shaderProgram.Activate();
+	glActiveTexture(GL_TEXTURE0);
+	_raytracing.Bind();
+
+	_camara.SetOrthographic(3.0f, 4.0f / 3.0f);
+
+	glm::mat3 NormalMatrix = glm::mat3(glm::transpose(glm::inverse(_transform.GetModelMatrix())));
+	_shaderProgram.SetUniformMatrix("NormalMatrix", NormalMatrix);
+	_shaderProgram.SetUniformMatrix("modelMatrix", _transform.GetModelMatrix());
+	_shaderProgram.SetUniformMatrix("mvpMatrix", _camara.GetViewProjection()
+		* _transform.GetModelMatrix());
+	_mesh.Draw(GL_TRIANGLES);
+
+	_raytracing.Unbind();
+	_shaderProgram.Deactivate();
+
+	// Cambiar el buffer actual.
+	glutSwapBuffers();
+}
+
+
+
 int thisone;
 int main(int argc, char *argv[]) {
 	cout << "Cargando . . ." << endl;
@@ -354,5 +434,61 @@ int main(int argc, char *argv[]) {
 	}
 	savebmp("RayTracing.bmp", width, height, dpi, pixels);
 	system("pause");
+
+	//OpenGL 
+	// Inicialización de Freeglut.
+	// Freeglut se encarga de crear una ventana
+	// En donde vamos a poder dibujar
+	glutInit(&argc, argv);
+	// Freeglut es el encargado de solicitar un contexto
+	// de OpenGL. El contexto se refiere a las capacidades
+	// que va a tener nuestra aplicación gráfica.
+	glutInitContextVersion(4, 4);
+	// Tenemos que informar que queremos trabajar únicamente con
+	// el pipeline programable
+	glutInitContextProfile(GLUT_CORE_PROFILE);
+	// Freeglut nos permite configurar eventos que ocurren en la venta.
+	// Un evento que nos interesa es cuando alguien cierra la venta.
+	// En este caso simplemente dejamos de renderear y terminamos el programa.
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	// Configuramos el framebuffer. En este caso estamos solicitando
+	// un buffer true color RGBA, un buffer de profundidad y un segundo buffer
+	// para renderear.
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
+	glutInitWindowSize(640, 480);
+	// Le damos un nombre a la ventana y la creamos.
+	glutCreateWindow("Hell World GL");
+	// Asociamos una funcion de render. Esta función se
+	// mandará a llamar para dibujar un frame.
+	glutDisplayFunc(GameLoop);
+
+	// Inicializar GLEW. Esta librería se encarga
+	// de obtener el API de OpenGL de nuestra tarjeta
+	// de video. SHAME ON YOU MICROSOFT.
+	glewInit();
+
+	// Configuramos OpenGL. Este es el color
+	// por default del buffer de color en el framebuffer.
+	glClearColor(1.0f, 1.0f, 0.5f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_PROGRAM_POINT_SIZE);
+	glPointSize(5);
+
+	// Inicializar DevIL
+	ilInit(); // Inicializamos la librería y sus recursos
+	ilEnable(IL_ORIGIN_SET); // Le decimos que queremos cambiar
+							 // el punto de origen
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT); // Cambiarlo y configurarlo
+										// como abajo a la izquerda. Hace match con las
+										// coordenadas de textura.
+
+	Initialize();
+
+	// Iniciar la aplicación. El main se pausará en esta
+	// línea hasta que se cierre la ventana de OpenGL.
+	glutMainLoop();
+
+	// Terminar.
 	return 0;
 }
