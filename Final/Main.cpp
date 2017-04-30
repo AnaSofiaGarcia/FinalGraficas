@@ -271,7 +271,7 @@ void Initialize() {
 	_shaderProgram.LinkProgram();
 	_shaderProgram.Deactivate();
 
-	_camara.SetPosition(0.0f, 0.0f, 0.0f);
+	_camara.SetPosition(0.0f, 0.0f, -5.0f);
 
 	_raytracing.LoadTexture("RayTracing.bmp");
 	
@@ -285,7 +285,7 @@ void GameLoop() {
 	glActiveTexture(GL_TEXTURE0);
 	_raytracing.Bind();
 
-	_camara.SetOrthographic(3.0f, 4.0f / 3.0f);
+	_camara.SetOrthographic(-5.0f,-5.0f);
 
 	glm::mat3 NormalMatrix = glm::mat3(glm::transpose(glm::inverse(_transform.GetModelMatrix())));
 	_shaderProgram.SetUniformMatrix("NormalMatrix", NormalMatrix);
