@@ -1,20 +1,16 @@
-#pragma once
+#include "Source.h"
 #include "Ray.h"
 #include "Color.h"
-#include "Source.h"
 
-class Light : public Source
-{
-public:
-	Light();
-	Light(Ray p, Color c);
-	~Light();
-
-	Ray getLightPosition();
-	Color getLightColor();
-
-private:
+class Light : public Source {
 	Ray _position;
 	Color _color;
+
+public:
+	Light();
+	Light(Ray, Color);
+
+	virtual Ray getLightPosition();
+	virtual Color getLightColor();
 };
 

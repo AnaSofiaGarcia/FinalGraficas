@@ -4,10 +4,6 @@ Source::Source()
 {
 }
 
-Source::~Source()
-{
-}
-
 Ray Source::getLightPosition()
 {
 	return Ray(0, 0, 0);

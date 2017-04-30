@@ -1,29 +1,24 @@
 #pragma once
-//#include <glm/glm.hpp>
+
 #include "math.h"
 
-class Ray
-{
+class Ray {
+	double x;
+	double y;
+	double z;
+
 public:
 	Ray();
-	Ray(double i, double j, double k);
-	~Ray();
+	Ray(double, double, double);
 
 	double getRayX();
 	double getRayY();
 	double getRayZ();
-
 	double magnitude();
-	double dotProduct(Ray v);
-
 	Ray normalize();
 	Ray negative();
+	double dotProduct(Ray  v);
 	Ray crossProduct(Ray v);
 	Ray addRay(Ray v);
 	Ray multRay(double scalar);
-
-private:
-	double x;
-	double y;
-	double z;
 };

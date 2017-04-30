@@ -1,42 +1,37 @@
 #include "Camera.h"
 
-
 Camera::Camera()
 {
-	camPosition = Ray(0, 0, 0);
-	camDirection = Ray(0, 0, 1);
-	camRight = Ray(0, 0, 0);
-	camDown = Ray(0, 0, 0);
+	_camPos = Ray(0, 0, 0);
+	_camDir = Ray(0, 0, 1);
+	_camRight = Ray(0, 0, 0);
+	_camDown = Ray(0, 0, 0);
 }
 
 Camera::Camera(Ray position, Ray direction, Ray right, Ray down)
 {
-	camPosition = position;
-	camDirection = direction;
-	camRight = right;
-	camDown = down;
-}
-
-Camera::~Camera()
-{
+	_camPos = position;
+	_camDir = direction;
+	_camRight = right;
+	_camDown = down;
 }
 
 Ray Camera::getCameraPosition()
 {
-	return camPosition;
+	return _camPos;
 }
 
 Ray Camera::getCameraDirection()
 {
-	return camDirection;
+	return _camDir;
 }
 
 Ray Camera::getCameraRight()
 {
-	return camRight;
+	return _camRight;
 }
 
 Ray Camera::getCameraDown()
 {
-	return camDown;
+	return _camDown;
 }

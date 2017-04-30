@@ -2,13 +2,12 @@
 #include "Ray.h"
 #include "Color.h"
 
-class Source
-{
+class Source {
 public:
 	Source();
-	~Source();
 
-	Ray getLightPosition();
-	Color getLightColor();
+	virtual Ray getLightPosition();
+	virtual Color getLightColor();
 };
+
 
