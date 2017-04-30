@@ -41,6 +41,10 @@
     <ClInclude Include="Source.h" />
     <ClInclude Include="Sphere.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="DefaultTexture.frag" />
+    <None Include="DefaultTexture.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{04CE6DDD-8F22-4E54-878C-CACEFC2B48F1}</ProjectGuid>
     <RootNamespace>Final</RootNamespace>
