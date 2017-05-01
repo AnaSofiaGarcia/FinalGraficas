@@ -254,7 +254,7 @@ void Initialize() {
 	texCoords.push_back(glm::vec2(0.0f, 1.0f));
 
 	std::vector<unsigned int> indices;
-	indices.push_back(0); indices.push_back(2); indices.push_back(1);
+	indices.push_back(0); indices.push_back(1); indices.push_back(2);
 	indices.push_back(0); indices.push_back(2); indices.push_back(3);
 
 	_mesh.CreateMesh(6);
@@ -271,6 +271,10 @@ void Initialize() {
 	_shaderProgram.LinkProgram();
 	_shaderProgram.Deactivate();
 
+	_shaderProgram.Activate();
+	_shaderProgram.SetUniformi("DiffuseTexture", 0);
+	_shaderProgram.Deactivate();
+
 	_camara.SetPosition(0.0f, 0.0f, -5.0f);
 
 	_raytracing.LoadTexture("RayTracing.bmp");
@@ -285,15 +289,14 @@ void GameLoop() {
 	glActiveTexture(GL_TEXTURE0);
 	_raytracing.Bind();
 
-	_camara.SetOrthographic(-5.0f,-5.0f);
+	_camara.SetOrthographic(0.0f,0.0f);
 
-	glm::mat3 NormalMatrix = glm::mat3(glm::transpose(glm::inverse(_transform.GetModelMatrix())));
-	_shaderProgram.SetUniformMatrix("NormalMatrix", NormalMatrix);
 	_shaderProgram.SetUniformMatrix("modelMatrix", _transform.GetModelMatrix());
 	_shaderProgram.SetUniformMatrix("mvpMatrix", _camara.GetViewProjection()
 		* _transform.GetModelMatrix());
 	_mesh.Draw(GL_TRIANGLES);
 
+	glActiveTexture(GL_TEXTURE0);
 	_raytracing.Unbind();
 	_shaderProgram.Deactivate();
 

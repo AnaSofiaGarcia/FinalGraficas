@@ -2,6 +2,7 @@
 
 in vec2 InterpolatedTexCoord;
 in vec3 InterpolatedColor;
+
 out vec4 FragColor;
 
 uniform sampler2D DiffuseTexture;

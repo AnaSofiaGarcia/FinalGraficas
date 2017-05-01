@@ -51,6 +51,13 @@ void ShaderProgram::SetAttribute(GLuint locationIndex, std::string name)
 	glBindAttribLocation(_programHandle, locationIndex, name.c_str());
 }
 
+void ShaderProgram::SetUniformi(std::string name, int value)
+{
+	GLint uniformLocation =
+		glGetUniformLocation(_programHandle, name.c_str());
+	glUniform1i(uniformLocation, value);
+}
+
 void ShaderProgram::SetUniformf(std::string name, float x)
 {
 	GLint uniformLocation = glGetUniformLocation(_programHandle, name.c_str());
@@ -73,6 +80,14 @@ void ShaderProgram::SetUniformf(std::string name, float x, float y, float z, flo
 {
 	GLint uniformLocation = glGetUniformLocation(_programHandle, name.c_str());
 	glUniform4f(uniformLocation, x, y, z, w);
+}
+
+void ShaderProgram::SetUniformMatrix(std::string name, glm::mat3 matrix)
+{
+	GLint uniformLocation = glGetUniformLocation(_programHandle,
+		name.c_str());
+	glUniformMatrix3fv(uniformLocation, 1, GL_FALSE,
+		glm::value_ptr(matrix));
 }
 
 void ShaderProgram::SetUniformMatrix(std::string name, glm::mat4 matrix)
