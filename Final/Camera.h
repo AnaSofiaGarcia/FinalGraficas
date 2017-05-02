@@ -1,13 +1,12 @@
 #pragma once
-#pragma once
 
 #include "Ray.h"
 #include "Transform.h"
-#include <glm\gtc\matrix_transform.hpp>
+#include<glm/gtc/quaternion.hpp>
 #include <glm/glm.hpp>
 #include <string>
 
-class Camera {
+class Camera : public Transform{
 private:
 	Ray _camPos;
 	Ray _camDir;
@@ -26,9 +25,11 @@ public:
 	Ray getCameraDirection();
 	Ray getCameraRight();
 	Ray getCameraDown();
-	void SetOrthographic(float size, float aspectRatio);
-	glm::vec3 getPosition();
 
+
+	void SetOrthographic(float size, float aspectRatio);
+
+	glm::vec3 GetPosition();
 	glm::mat4 GetViewProjection();
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix();
@@ -42,5 +43,13 @@ public:
 	void MoveUp(float delta, bool world = false);
 	void MoveRight(float delta, bool world = false);
 
+
+	void Yaw(float degrees);
+	void Pitch(float degrees);
+	void Roll(float degrees);
+
+	void Rotate(float x, float y, float z, bool world);
+
+	void SetPerspective(float nearPlane, float farPlane, float fieldOfView, float aspectRatio);
 };
 

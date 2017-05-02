@@ -1,8 +1,10 @@
 #include "ShaderProgram.h"
 
-#include "Shader.h"
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
+
+using namespace std;
+
 
 ShaderProgram::ShaderProgram()
 {
@@ -53,8 +55,7 @@ void ShaderProgram::SetAttribute(GLuint locationIndex, std::string name)
 
 void ShaderProgram::SetUniformi(std::string name, int value)
 {
-	GLint uniformLocation =
-		glGetUniformLocation(_programHandle, name.c_str());
+	GLint uniformLocation = glGetUniformLocation(_programHandle, name.c_str());
 	glUniform1i(uniformLocation, value);
 }
 

@@ -5,8 +5,8 @@
 class InputFile
 {
 public:
-	bool Read(const std::string& filename);
-	const std::string GetContents() const;
+	bool Read(std::string filename);
+	std::string getContents();
 
 private:
 	std::string _contents;

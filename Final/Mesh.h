@@ -4,6 +4,7 @@
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>
 #include <vector>
+using namespace std;
 
 class Mesh
 {

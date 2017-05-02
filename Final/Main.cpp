@@ -31,6 +31,7 @@
 
 using namespace std;
 
+float Time;
 Mesh _mesh;
 ShaderProgram _shaderProgram;
 Transform _transform;
@@ -239,25 +240,29 @@ void doInit() {
 
 }
 
-void Initialize() {
-
+void Initialize() 
+{
+	Time = 0;
 	std::vector<glm::vec3> positions;
-	positions.push_back(glm::vec3(-1.0f, 1.0f, 1.0f));
-	positions.push_back(glm::vec3(-1.0f, -1.0f, 1.0f));
-	positions.push_back(glm::vec3(1.0f, -1.0f, 1.0f));
-	positions.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+	positions.push_back(glm::vec3(-1.0f, -1.0f, -1.0));
+	positions.push_back(glm::vec3(1.0f, -1.0f, -1.0f));
+	positions.push_back(glm::vec3(1.0f, 1.0f, -1.0f));
+	positions.push_back(glm::vec3(-1.0f, 1.0f, -1.0f));
+
+
 
 	std::vector<glm::vec2> texCoords;
 	texCoords.push_back(glm::vec2(0.0f, 0.0f));
 	texCoords.push_back(glm::vec2(1.0f, 0.0f));
 	texCoords.push_back(glm::vec2(1.0f, 1.0f));
 	texCoords.push_back(glm::vec2(0.0f, 1.0f));
+	
 
 	std::vector<unsigned int> indices;
 	indices.push_back(0); indices.push_back(1); indices.push_back(2);
 	indices.push_back(0); indices.push_back(2); indices.push_back(3);
 
-	_mesh.CreateMesh(6);
+	_mesh.CreateMesh(4);
 	_mesh.SetPositionAttribute(positions, GL_STATIC_DRAW, 0);
 	_mesh.SetTexCoordAttribute(texCoords, GL_STATIC_DRAW, 1);
 	_mesh.SetIndices(indices, GL_STATIC_DRAW);
@@ -271,32 +276,36 @@ void Initialize() {
 	_shaderProgram.LinkProgram();
 	_shaderProgram.Deactivate();
 
-	_shaderProgram.Activate();
-	_shaderProgram.SetUniformi("DiffuseTexture", 0);
-	_shaderProgram.Deactivate();
-
-	_camara.SetPosition(0.0f, 0.0f, -5.0f);
 
 	_raytracing.LoadTexture("RayTracing.bmp");
 	
+	_camara.SetPerspective(1.0f, 1000.0f, 60.0f, 1.0f);
+	_camara.SetPosition(0.0f, 0.0f, -2.7f);
 
+	_shaderProgram.Activate();
+	_shaderProgram.SetUniformi("DiffuseTexture", 0);
+	_shaderProgram.Deactivate();
+}
+
+void Idle() {
+	glutPostRedisplay();
 }
 
 void GameLoop() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	Time += 0.05f;
+	if (Time >= 360)
+		Time = 0;
+	//_camara.SetOrthographic(3.0f, 4.0f / 3.0f);
 	_shaderProgram.Activate();
 	glActiveTexture(GL_TEXTURE0);
 	_raytracing.Bind();
 
-	_camara.SetOrthographic(0.0f,0.0f);
-
-	_shaderProgram.SetUniformMatrix("modelMatrix", _transform.GetModelMatrix());
-	_shaderProgram.SetUniformMatrix("mvpMatrix", _camara.GetViewProjection()
-		* _transform.GetModelMatrix());
+    _shaderProgram.SetUniformMatrix("ModelMatrix", _transform.GetModelMatrix());
+	_shaderProgram.SetUniformMatrix("mvpMatrix", _camara.GetViewProjection() * _transform.GetModelMatrix());
 	_mesh.Draw(GL_TRIANGLES);
 
-	glActiveTexture(GL_TEXTURE0);
 	_raytracing.Unbind();
 	_shaderProgram.Deactivate();
 
@@ -304,7 +313,36 @@ void GameLoop() {
 	glutSwapBuffers();
 }
 
+void Keyboard(unsigned char key, int x, int y)
+{
+	if (key == 'w')
+		_camara.MoveForward(0.1f, false);
+	if (key == 's')
+		_camara.MoveForward(-0.1f, false);
+	if (key == 'd')
+		_camara.MoveRight(0.1f, false);
+	if (key == 'a')
+		_camara.MoveRight(-0.1f, false);
+}
 
+void SpecialKeys(int key, int x, int y)
+{
+	if (key == GLUT_KEY_UP)
+		_transform.MoveForward(0.1f, true);
+	if (key == GLUT_KEY_DOWN)
+		_transform.MoveForward(-0.1f, true);
+	if (key == GLUT_KEY_RIGHT)
+		_transform.MoveRight(0.1f, true);
+	if (key == GLUT_KEY_LEFT)
+		_transform.MoveRight(-0.1f, true);
+}
+
+/*void ReshapeWindow(int width, int height)
+{
+	glViewport(0, 0, width, height);
+	_camara.SetPerspective(1.0f, 1000.0f, 60.0f,
+	(float)width / (float)height);
+}*/
 
 int thisone;
 int main(int argc, char *argv[]) {
@@ -465,6 +503,11 @@ int main(int argc, char *argv[]) {
 	// mandará a llamar para dibujar un frame.
 	glutDisplayFunc(GameLoop);
 
+	glutIdleFunc(Idle);
+	glutKeyboardFunc(Keyboard);
+	glutSpecialFunc(SpecialKeys);
+	//glutReshapeFunc(ReshapeWindow);
+
 	// Inicializar GLEW. Esta librería se encarga
 	// de obtener el API de OpenGL de nuestra tarjeta
 	// de video. SHAME ON YOU MICROSOFT.
@@ -472,11 +515,12 @@ int main(int argc, char *argv[]) {
 
 	// Configuramos OpenGL. Este es el color
 	// por default del buffer de color en el framebuffer.
-	glClearColor(1.0f, 1.0f, 0.5f, 1.0f);
+	glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glDisable(GL_PROGRAM_POINT_SIZE);
-	glPointSize(5);
+
+	//glDisable(GL_PROGRAM_POINT_SIZE);
+	//glPointSize(5);
 
 	// Inicializar DevIL
 	ilInit(); // Inicializamos la librería y sus recursos

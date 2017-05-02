@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <glm\gtc\matrix_transform.hpp>
 
 Camera::Camera()
 {
@@ -94,13 +95,42 @@ void Camera::MoveRight(float delta, bool world)
 	_viewMatrix =glm::inverse(_transform.GetModelMatrix());
 }
 
+void Camera::Yaw(float degrees)
+{
+	_transform.Rotate(0.0f, degrees, 0.0f, false);
+	_viewMatrix = glm::inverse(_transform.GetModelMatrix());
+}
+
+void Camera::Pitch(float degrees)
+{
+	_transform.Rotate(degrees, 0.0f, 0.0f, false);
+	_viewMatrix = glm::inverse(_transform.GetModelMatrix());
+}
+
+void Camera::Roll(float degrees)
+{
+	_transform.Rotate(0.0f, 0.0f, degrees, false);
+	_viewMatrix = glm::inverse(_transform.GetModelMatrix());
+}
+
+void Camera::Rotate(float x, float y, float z, bool world)
+{
+	_transform.Rotate(x, y, z, world);
+	_viewMatrix = glm::inverse(_transform.GetModelMatrix());
+}
+
+void Camera::SetPerspective(float nearPlane, float farPlane, float fieldOfView, float aspectRatio)
+{
+	_projectionMatrix = glm::perspective(glm::radians(fieldOfView), aspectRatio, nearPlane, farPlane);
+}
+
 void Camera::SetOrthographic(float size, float aspectRatio)
 {
 	float xSize = aspectRatio * size;
 	_projectionMatrix = glm::ortho(-xSize, xSize, -size, size, -size, size);
 }
 
-glm::vec3 Camera::getPosition()
+glm::vec3 Camera::GetPosition()
 {
 	return _transform.GetPosition();
 }

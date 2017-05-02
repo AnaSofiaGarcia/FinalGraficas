@@ -185,7 +185,7 @@ void Transform::UpdateModelMatrixRotation()
 
 void Transform::UpdateLocalVectors()
 {
-	_forward = glm::vec3(_modelMatrix * glm::vec4(WORLD_FORWARD_VECTOR, 0.0f));
-	_up = glm::vec3(_modelMatrix * glm::vec4(WORLD_UP_VECTOR, 0.0f));
-	_right = glm::cross(_forward, _up);
+	_forward = glm::vec3(glm::inverse(_modelMatrix) * glm::vec4(WORLD_FORWARD_VECTOR, 0.0f));
+	_up = glm::vec3(glm::inverse(_modelMatrix) * glm::vec4(WORLD_UP_VECTOR, 0.0f));
+	_right = -glm::cross(_forward, _up);
 }
